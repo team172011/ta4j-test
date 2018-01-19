@@ -37,14 +37,14 @@ import org.ta4j.core.indicators.helpers.GainIndicator;
 import org.ta4j.core.indicators.helpers.LossIndicator;
 import org.ta4j.core.mocks.MockTimeSeries;
 
-public class RSIIndicatorTest extends IndicatorTest {
+public class RSIIndicatorTest extends IndicatorTest<Decimal> {
 
     private TimeSeries data;
     private ExternalIndicatorTest xls;
     //private ExternalIndicatorTest sql;
 
     public RSIIndicatorTest() {
-        super((data, params) -> { return new RSIIndicator((Indicator<Decimal>) data, (int) params[0]); });
+        super((series, indicator, params) -> new RSIIndicator( indicator, (int) params[0]));
         xls = new XLSIndicatorTest(this.getClass(), "RSI.xls", 10);
         //sql = new SQLIndicatorTest(this.getClass(), "RSI.db", username, pass, table, column);
     }
@@ -65,27 +65,27 @@ public class RSIIndicatorTest extends IndicatorTest {
 
     @Test
     public void firstValueShouldBeZero() throws Exception {
-        Indicator<Decimal> indicator = getIndicator(new ClosePriceIndicator(data), 14);
+        Indicator<Decimal> indicator = getIndicator(null, new ClosePriceIndicator(data), 14);
         assertEquals(Decimal.ZERO, indicator.getValue(0));
     }
 
     @Test
     public void hundredIfNoLoss() throws Exception {
-        Indicator<Decimal> indicator = getIndicator(new ClosePriceIndicator(data), 1);
+        Indicator<Decimal> indicator = getIndicator(null, new ClosePriceIndicator(data), 1);
         assertEquals(Decimal.HUNDRED, indicator.getValue(14));
         assertEquals(Decimal.HUNDRED, indicator.getValue(15));
     }
 
     @Test
     public void zeroIfNoGain() throws Exception {
-        Indicator<Decimal> indicator = getIndicator(new ClosePriceIndicator(data), 1);
+        Indicator<Decimal> indicator = getIndicator(null, new ClosePriceIndicator(data), 1);
         assertEquals(Decimal.ZERO, indicator.getValue(1));
         assertEquals(Decimal.ZERO, indicator.getValue(2));
     }
 
     @Test
     public void usingTimeFrame14UsingClosePrice() throws Exception {
-        Indicator<Decimal> indicator = getIndicator(new ClosePriceIndicator(data), 14);
+        Indicator<Decimal> indicator = getIndicator(null, new ClosePriceIndicator(data), 14);
         assertEquals(68.4746, indicator.getValue(15).doubleValue(), TATestsUtils.TA_OFFSET);
         assertEquals(64.7836, indicator.getValue(16).doubleValue(), TATestsUtils.TA_OFFSET);
         assertEquals(72.0776, indicator.getValue(17).doubleValue(), TATestsUtils.TA_OFFSET);
@@ -104,15 +104,15 @@ public class RSIIndicatorTest extends IndicatorTest {
         Indicator<Decimal> xlsClose = new ClosePriceIndicator(xls.getSeries());
         Indicator<Decimal> indicator;
 
-        indicator = getIndicator(xlsClose, 1);
+        indicator = getIndicator(null,xlsClose, 1);
         assertIndicatorEquals(xls.getIndicator(1), indicator);
         assertEquals(100.0, indicator.getValue(indicator.getTimeSeries().getEndIndex()).doubleValue(), TATestsUtils.TA_OFFSET);
 
-        indicator = getIndicator(xlsClose, 3);
+        indicator = getIndicator(null,xlsClose, 3);
         assertIndicatorEquals(xls.getIndicator(3), indicator);
         assertEquals(67.0453, indicator.getValue(indicator.getTimeSeries().getEndIndex()).doubleValue(), TATestsUtils.TA_OFFSET);
 
-        indicator = getIndicator(xlsClose, 13);
+        indicator = getIndicator(null,xlsClose, 13);
         assertIndicatorEquals(xls.getIndicator(13), indicator);
         assertEquals(52.5876, indicator.getValue(indicator.getTimeSeries().getEndIndex()).doubleValue(), TATestsUtils.TA_OFFSET);
     }
@@ -128,7 +128,7 @@ public class RSIIndicatorTest extends IndicatorTest {
                 45.6875, 43.0625, 43.5625, 44.8750, 43.6875);
         // ta4j RSI uses MMA for average gain and loss
         // then uses simple division of the two for RS
-        Indicator<Decimal> indicator = getIndicator(new ClosePriceIndicator(
+        Indicator<Decimal> indicator = getIndicator(null, new ClosePriceIndicator(
                 series), 14);
         Indicator<Decimal> close = new ClosePriceIndicator(series);
         Indicator<Decimal> gain = new GainIndicator(close);

@@ -26,20 +26,16 @@ import static org.junit.Assert.assertEquals;
 import static org.ta4j.core.TATestsUtils.assertIndicatorEquals;
 
 import org.junit.Test;
-import org.ta4j.core.Decimal;
-import org.ta4j.core.ExternalIndicatorTest;
-import org.ta4j.core.Indicator;
-import org.ta4j.core.TATestsUtils;
-import org.ta4j.core.TimeSeries;
+import org.ta4j.core.*;
 import org.ta4j.core.indicators.IndicatorTest;
 import org.ta4j.core.indicators.XLSIndicatorTest;
 
-public class ADXIndicatorTest extends IndicatorTest {
+public class ADXIndicatorTest extends IndicatorTest<Decimal> {
 
-    private ExternalIndicatorTest xls;
+    private ExternalIndicatorTest<Decimal> xls;
 
     public ADXIndicatorTest() throws Exception {
-        super((data, params) -> { return new ADXIndicator((TimeSeries) data, (int) params[0], (int) params[1]); });
+        super((data, indicator,params) -> new ADXIndicator( data, (int) params[0], (int) params[1]));
         xls = new XLSIndicatorTest(this.getClass(), "ADX.xls", 15);
     }
 
@@ -48,15 +44,15 @@ public class ADXIndicatorTest extends IndicatorTest {
         TimeSeries series = xls.getSeries();
         Indicator<Decimal> actualIndicator;
 
-        actualIndicator = getIndicator(series, 1, 1);
+        actualIndicator = getIndicator(series,null, 1,1);
         assertIndicatorEquals(xls.getIndicator(1, 1), actualIndicator);
         assertEquals(100.0, actualIndicator.getValue(actualIndicator.getTimeSeries().getEndIndex()).doubleValue(), TATestsUtils.TA_OFFSET);
 
-        actualIndicator = getIndicator(series, 3, 2);
+        actualIndicator = getIndicator(series,null, 3, 2);
         assertIndicatorEquals(xls.getIndicator(3, 2), actualIndicator);
         assertEquals(12.1330, actualIndicator.getValue(actualIndicator.getTimeSeries().getEndIndex()).doubleValue(), TATestsUtils.TA_OFFSET);
 
-        actualIndicator = getIndicator(series, 13, 8);
+        actualIndicator = getIndicator(series,null, 13, 8);
         assertIndicatorEquals(xls.getIndicator(13, 8), actualIndicator);
         assertEquals(7.3884, actualIndicator.getValue(actualIndicator.getTimeSeries().getEndIndex()).doubleValue(), TATestsUtils.TA_OFFSET);
     }

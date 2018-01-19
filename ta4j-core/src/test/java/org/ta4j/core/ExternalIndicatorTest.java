@@ -22,24 +22,24 @@
  */
 package org.ta4j.core;
 
-public interface ExternalIndicatorTest {
+public interface ExternalIndicatorTest<D> {
 
     /**
      * Gets the complete series of price data from the external data source.
      *
      * @return TimeSeries the series
-     * @throws Exception
+     * @throws Exception general exception
      */
-    public TimeSeries getSeries() throws Exception;
+    TimeSeries getSeries() throws Exception;
 
     /**
      * Provides parameters to the external data source and returns the new
      * indicator.
      *
      * @param params the indicator parameters
-     * @return Indicator<Decimal> the indicator
-     * @throws Exception
+     * @return Indicator the indicator
+     * @throws Exception general exception
      */
-    public <P> Indicator<Decimal> getIndicator(P... params) throws Exception;
+    Indicator<D> getIndicator(Object... params) throws Exception;
 
 }

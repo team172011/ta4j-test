@@ -23,8 +23,9 @@
 package org.ta4j.core;
 
 @FunctionalInterface
-public interface IndicatorFactory<D,P,I> {
+public interface IndicatorFactory<D> {
 
-    public <D,P> Indicator<I> getIndicator(D data, P... params) throws Exception;
+
+    Indicator<D> getIndicator(TimeSeries series, Indicator<D> indicator, Object... parameters) throws Exception;
 
 }

@@ -28,7 +28,7 @@ import org.ta4j.core.Indicator;
 import org.ta4j.core.TimeSeries;
 import org.ta4j.core.XlsTestsUtils;
 
-public class XLSIndicatorTest implements ExternalIndicatorTest {
+public class XLSIndicatorTest implements ExternalIndicatorTest<Decimal> {
 
     private Class clazz;
     private String fileName;
@@ -50,7 +50,7 @@ public class XLSIndicatorTest implements ExternalIndicatorTest {
     }
 
     @Override
-    public <P> Indicator<Decimal> getIndicator(P... params) throws Exception {
+    public  Indicator<Decimal> getIndicator(Object... params) throws Exception {
         return XlsTestsUtils.getIndicator(clazz, fileName, column, params);
     }
 

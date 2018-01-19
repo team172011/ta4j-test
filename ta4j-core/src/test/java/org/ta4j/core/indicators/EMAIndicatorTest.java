@@ -41,12 +41,12 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.mocks.MockBar;
 import org.ta4j.core.mocks.MockTimeSeries;
 
-public class EMAIndicatorTest extends IndicatorTest {
+public class EMAIndicatorTest extends IndicatorTest<Decimal> {
 
     private ExternalIndicatorTest xls;
 
     public EMAIndicatorTest() throws Exception {
-        super((data, params) -> { return new EMAIndicator((Indicator<Decimal>) data, (int) params[0]); });
+        super((series, indicator,params) -> new EMAIndicator(indicator, (int) params[0]));
         xls = new XLSIndicatorTest(this.getClass(), "EMA.xls", 6);
     }
     private TimeSeries data;
@@ -62,13 +62,13 @@ public class EMAIndicatorTest extends IndicatorTest {
 
     @Test
     public void firstValueShouldBeEqualsToFirstDataValue() throws Exception {
-        Indicator<Decimal> indicator = getIndicator(new ClosePriceIndicator(data), 1);
+        Indicator<Decimal> indicator = getIndicator(null, new ClosePriceIndicator(data), 1);
         assertDecimalEquals(indicator.getValue(0), 64.75);
     }
 
     @Test
     public void usingTimeFrame10UsingClosePrice() throws Exception {
-        Indicator<Decimal> indicator = getIndicator(new ClosePriceIndicator(data), 10);
+        Indicator<Decimal> indicator = getIndicator(null, new ClosePriceIndicator(data), 10);
         assertDecimalEquals(indicator.getValue(9), 63.6948);
         assertDecimalEquals(indicator.getValue(10), 63.2648);
         assertDecimalEquals(indicator.getValue(11), 62.9457);
@@ -81,7 +81,7 @@ public class EMAIndicatorTest extends IndicatorTest {
             bigListOfBars.add(new MockBar(i));
         }
         MockTimeSeries bigSeries = new MockTimeSeries(bigListOfBars);
-        Indicator<Decimal> indicator = getIndicator(new ClosePriceIndicator(bigSeries), 10);
+        Indicator<Decimal> indicator = getIndicator(null, new ClosePriceIndicator(bigSeries), 10);
         // if a StackOverflowError is thrown here, then the RecursiveCachedIndicator does not work as intended.
         assertDecimalEquals(indicator.getValue(9999), 9994.5);
     }
@@ -92,15 +92,15 @@ public class EMAIndicatorTest extends IndicatorTest {
         Indicator<Decimal> closePrice = new ClosePriceIndicator(xlsSeries);
         Indicator<Decimal> indicator;
 
-        indicator = getIndicator(closePrice, 1);
+        indicator = getIndicator(null, closePrice, 1);
         assertIndicatorEquals(xls.getIndicator(1), indicator);
         assertEquals(329.0, indicator.getValue(indicator.getTimeSeries().getEndIndex()).doubleValue(), TATestsUtils.TA_OFFSET);
 
-        indicator = getIndicator(closePrice, 3);
+        indicator = getIndicator(null, closePrice, 3);
         assertIndicatorEquals(xls.getIndicator(3), indicator);
         assertEquals(327.7748, indicator.getValue(indicator.getTimeSeries().getEndIndex()).doubleValue(), TATestsUtils.TA_OFFSET);
 
-        indicator = getIndicator(closePrice, 13);
+        indicator = getIndicator(null, closePrice, 13);
         assertIndicatorEquals(xls.getIndicator(13), indicator);
         assertEquals(327.4076, indicator.getValue(indicator.getTimeSeries().getEndIndex()).doubleValue(), TATestsUtils.TA_OFFSET);
     }
